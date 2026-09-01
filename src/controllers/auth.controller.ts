@@ -1,18 +1,19 @@
 import type { Request, Response } from "express";
+import { prisma } from "../config/prisma.js";
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
   // TODO: validation will be handled by middleware
   // TODO: user creation will be handled by auth service
+  const user = await prisma.user.create({
+    data: req.body,
+  });
 
   res.status(201).json({
     success: true,
     message: "User registered successfully",
-    data: {
-      name,
-      email,
-    },
+    user,
   });
 };
 
