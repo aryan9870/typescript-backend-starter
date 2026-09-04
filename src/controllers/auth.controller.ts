@@ -1,33 +1,54 @@
 import type { Request, Response } from "express";
-import { prisma } from "../config/prisma.js";
+import { registerUser, loginUser } from "../services/auth.service.js";
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+    const { name, email, password } = req.body;
 
-  // TODO: validation will be handled by middleware
-  // TODO: user creation will be handled by auth service
-  const user = await prisma.user.create({
-    data: req.body,
-  });
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
 
-  res.status(201).json({
-    success: true,
-    message: "User registered successfully",
-    user,
-  });
+    const { user, token } = await registerUser(name, email, password);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      user,
+    });
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  // TODO: validation will be handled by middleware
-  // TODO: authentication logic will be handled by auth service
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
 
-  res.status(200).json({
-    success: true,
-    message: "Login successful",
-    data: {
-      email,
-    },
-  });
+    const { user, token } = await loginUser(email, password);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user,
+    });
 };
