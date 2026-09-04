@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../config/prisma.js";
 import generateToken from "../utils/generateToken.js";
+import ApiError from "../utils/apiError.js";
 
 export const registerUser = async (
   name: string,
@@ -12,7 +13,7 @@ export const registerUser = async (
   });
 
   if (existingUser) {
-    throw new Error("User already exists");
+    throw new ApiError("User already exists", 400);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -47,7 +48,7 @@ export const loginUser = async (
   });
 
   if (!user) {
-    throw new Error("Invalid email or password");
+    throw new ApiError("Invalid email or password", 401);
   }
 
   const isPasswordValid = await bcrypt.compare(
@@ -56,7 +57,7 @@ export const loginUser = async (
   );
 
   if (!isPasswordValid) {
-    throw new Error("Invalid email or password");
+    throw new ApiError("Invalid email or password", 401);
   }
 
   const token = generateToken(user.id);
