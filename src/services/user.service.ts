@@ -17,6 +17,7 @@ export const updateUserProfile = async (
       name: true,
       email: true,
       avatar: true,
+      role: true,
       createdAt: true,
       updatedAt: true,
     },

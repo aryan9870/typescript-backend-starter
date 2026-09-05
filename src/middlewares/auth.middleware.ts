@@ -22,7 +22,7 @@ export const isLoggedin = async (req: Request, res: Response, next: NextFunction
     // Find user
     const user = await prisma.user.findUnique({
       where: { id: decoded.id  },
-      select: { id: true, name: true, email: true, avatar: true }
+      select: { id: true, name: true, email: true, avatar: true, role: true }
     });
 
     if (!user) {

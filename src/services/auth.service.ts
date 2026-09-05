@@ -33,6 +33,7 @@ export const registerUser = async (
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
     },
     token,
   };
@@ -67,6 +68,7 @@ export const loginUser = async (
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
     },
     token,
   };
