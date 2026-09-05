@@ -2,14 +2,8 @@ import type { Request, Response } from "express";
 import { registerUser, loginUser } from "../services/auth.service.js";
 
 export const register = async (req: Request, res: Response) => {
-    const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
+    const { name, email, password } = req.body;
 
     const { user, token } = await registerUser(name, email, password);
 
@@ -28,14 +22,8 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
+  
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and password are required",
-      });
-    }
 
     const { user, token } = await loginUser(email, password);
 
