@@ -13,7 +13,7 @@ export const isLoggedin = async (req: Request, res: Response, next: NextFunction
     }
 
     // Verify token
-    const decoded = jwt.verify(token, "aryan_nandini");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
 
     if (typeof decoded === "string" || !decoded.id) {
       throw new ApiError("Invalid token", 401);
